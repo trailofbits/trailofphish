@@ -1,0 +1,21 @@
+#!/bin/bash
+
+HOST=https://trailofphish.com/
+CATEGORIES=(crime phishing)
+
+# HTTP Basic-Auth credentials
+HTTP_USER=CHANGEME
+HTTP_PASSWORD=CHANGEME
+
+for category in $CATEGORIES; do
+	echo ">>> Updating $category ..."
+
+	mkdir -p $category/
+	wget -nc -A "*.zip" --http-user=$HTTP_USER --http-password=$HTTP_PASSWORD $HOST/$category/ $category/
+
+	echo ">>> Extracting new archives ..."
+
+	for archive in `ls $category/*.zip`; do
+		unzip -n -P infected $archive -d $category/
+	done
+done
