@@ -6,10 +6,19 @@ require 'mime/types'
 require 'nokogiri'
 
 module Email
+  #
+  # Represents the original Email message.
+  #
   class Message
 
     attr_reader :path, :directory, :name
 
+    #
+    # Initializes the message.
+    #
+    # @param [String] path
+    #   The path to the email message.
+    #
     def initialize(path)
       @path      = path
       @directory = File.dirname(path)
@@ -18,6 +27,15 @@ module Email
       @message = Mail.read(@path)
     end
 
+    #
+    # Calculates the MD5 checksum of an Email message.
+    #
+    # @param [String] path
+    #   The path to the message.
+    #
+    # @return [String]
+    #   The MD5 checksum in hexdigest.
+    #
     def self.md5(path)
       Digest::MD5.file(path).hexdigest
     end
@@ -46,6 +64,21 @@ module Email
       return raw_message
     end
 
+    #
+    # Enumerates the bodies of the message.
+    #
+    # @yield [content_type, body]
+    #   The given block will be passed each content-type and decoded body.
+    #
+    # @yieldparam [String] content_type
+    #   The content-type of the body.
+    #
+    # @yieldparam [String] body
+    #   The decoded body from the message.
+    #
+    # @return [Enumerator]
+    #   If no block is given, an Enumerator will be returned.
+    #
     def each_body
       return enum_for(__method__) unless block_given?
 
@@ -58,6 +91,18 @@ module Email
       end
     end
 
+    #
+    # Enumerates over each link within the message.
+    #
+    # @yield [link]
+    #   The given block will be passed each link found within the message.
+    #
+    # @yieldparam [String] link
+    #   An extracted URL from the message.
+    #
+    # @return [Enumerator]
+    #   If no block is given, an Enumerator will be returned.
+    #
     def each_link(&block)
       return enum_for(__method__) unless block_given?
 
@@ -75,6 +120,12 @@ module Email
       end
     end
 
+    #
+    # The unique set of links within the message.
+    #
+    # @return [Set<String>]
+    #   The set of unique links.
+    #
     def links
       each_link.to_set
     end
@@ -83,6 +134,11 @@ module Email
 
     protected
 
+    #
+    # Passes all additional method calls down to the `Mail::Message` object.
+    #
+    # @see http://rubydoc.info/gems/mail/Mail/Message
+    #
     def method_missing(*arguments); @message.send(*arguments); end
 
   end
