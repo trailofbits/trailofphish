@@ -15,9 +15,9 @@ require 'email/attachment'
 
 require 'mechanize'
 
-Dir.glob('originals/*') do |category|
+Dir.glob('raw/*') do |category|
   Dir.glob(File.join(category,'*.eml')) do |original_path|
-    message_dir  = File.join(File.basename(category),Email::Message.md5(original_path))
+    message_dir  = File.join('processed',File.basename(category),Email::Message.md5(original_path))
     message_path = File.join(message_dir,'message.eml')
 
     directory message_dir
@@ -86,7 +86,7 @@ Dir.glob('originals/*') do |category|
     zipfile = "#{message_dir}.zip"
 
     file zipfile => [message_path, links_dir, attachments_dir] do
-      chdir File.basename(category) do
+      chdir File.join('processed',File.basename(category)) do
         sh 'zip', '-r', '-P', 'infected', File.basename(zipfile), File.basename(message_dir)
       end
     end
