@@ -22,6 +22,30 @@ module Email
       Digest::MD5.file(path).hexdigest
     end
 
+    #
+    # Anonymizes sensitive information from the message.
+    #
+    # @return [String]
+    #   The redacted email message.
+    #
+    def anonymize
+      raw_message = File.read(@path)
+
+      replace_with_xs = lambda { |string|
+        raw_message.gsub!(string) do |match|
+          'X' * match.length
+        end
+      }
+
+      # redact all recipient addresses
+      @message[:to].addresses.each(&replace_with_xs)
+
+      # redact all recipient names
+      @message[:to].display_names.compact.each(&replace_with_xs)
+
+      return raw_message
+    end
+
     def each_body
       return enum_for(__method__) unless block_given?
 
