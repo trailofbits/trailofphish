@@ -28,6 +28,7 @@ create zip archives of the emails.
 * `rake emails:extract:attachments` - Extracts all attachments from all emails.
 * `rake emails:extract:links` - Extracts all links from all emails.
 * `rake emails:zip` - Creates zip archives of all emails.
+* `rake yard` - Generate API Documentation in the `doc/` directory.
 
 ## Anonymization
 
