@@ -15,83 +15,86 @@ require 'email/attachment'
 
 require 'mechanize'
 
-Dir.glob('raw/*') do |category|
-  Dir.glob(File.join(category,'*.eml')) do |original_path|
-    message_dir  = File.join('processed',File.basename(category),Email::Message.md5(original_path))
-    message_path = File.join(message_dir,'message.eml')
+namespace :emails do
+  INPUT_DIR  = File.join('data','raw')
+  OUTPUT_DIR = File.join('data','processed')
 
-    directory message_dir
+  Dir.glob("#{INPUT_DIR}/*") do |input_category_dir|
+    output_category_dir = File.join(OUTPUT_DIR,File.basename(input_category_dir))
 
-    file message_path => [message_dir, original_path] do
-      raw_email = File.read(original_path)
-      email     = Email::Message.new(original_path)
+    Dir.glob("#{input_category_dir}/*.eml") do |input_email|
+      output_email_dir  = File.join(output_category_dir,Email::Message.md5(input_email))
+      output_email_path = File.join(output_email_dir,'message.eml')
 
-      puts ">>> Anonymizing #{message_path} ..."
+      directory output_email_dir
 
-      File.open(message_path,'w') do |file|
-        sensitive = email[:to].addresses
+      file output_email_path => output_email_dir do
+        email = Email::Message.new(input_email)
 
-        file << raw_email.gsub(Regexp.union(sensitive)) do |match|
-          'X' * match.length
+        puts ">>> Anonymizing #{input_email} ..."
+
+        File.open(output_email_path,'w') do |output_file|
+          output_file.write(email.anonymize)
         end
       end
-    end
 
-    desc "Anonymizes all original emails"
-    task :anonymize => message_path
+      desc "Anonymizes all original emails"
+      task :anonymize => output_email_path
 
-    links_dir = File.join(message_dir,'links')
+      links_dir = File.join(output_email_dir,'links')
 
-    file links_dir => message_dir do
-      email = Email::Message.new(message_path)
+      file links_dir => output_email_dir do
+        email = Email::Message.new(input_email)
 
-      browser = Mechanize.new
-      browser.pluggable_parser.default = Mechanize::Download
+        browser = Mechanize.new
+        browser.pluggable_parser.default = Mechanize::Download
 
-      mkdir_p links_dir
+        mkdir links_dir
 
-      email.links.each do |url|
-        uri = URI(url)
+        email.links.each do |url|
+          uri = URI(url)
 
-        output = File.join(links_dir,uri.host,uri.request_uri)
-        FileUtils.mkdir_p File.dirname(output)
+          output = File.join(links_dir,uri.host,uri.request_uri)
+          mkdir_p File.dirname(output)
 
-        puts ">>> Downloading #{url} ..."
-        browser.get(url).save(output)
-      end
-    end
-
-    desc "Extracts links from all emails"
-    task 'extract:links' => links_dir
-
-    attachments_dir = File.join(message_dir,'attachments')
-
-    file attachments_dir => message_dir do
-      email = Email::Message.new(message_path)
-
-      mkdir attachments_dir
-
-      email.attachments.each do |attachment|
-        puts ">>> Extracting attachment #{attachment.filename} ..."
-
-        File.open(File.join(attachments_dir,attachment.filename),'wb') do |file|
-          file.write attachment.body.to_s
+          puts ">>> Downloading #{url} ..."
+          browser.get(url).save(output)
         end
       end
-    end
 
-    desc "Extracts attachments from all emails"
-    task 'extract:attachments' => attachments_dir
+      desc 'Extracts all links from all emails'
+      task 'extract:links' => links_dir
 
-    zipfile = "#{message_dir}.zip"
+      attachments_dir = File.join(output_email_dir,'attachments')
 
-    file zipfile => [message_path, links_dir, attachments_dir] do
-      chdir File.join('processed',File.basename(category)) do
-        sh 'zip', '-r', '-P', 'infected', File.basename(zipfile), File.basename(message_dir)
+      file attachments_dir => output_email_dir do
+        email = Email::Message.new(input_email)
+
+        mkdir attachments_dir
+
+        email.attachments.each do |attachment|
+          puts ">>> Extracting attachment #{attachment.filename} ..."
+
+          File.open(File.join(attachments_dir,attachment.filename),'wb') do |file|
+            file.write attachment.body.to_s
+          end
+        end
       end
-    end
 
-    desc "Creates zip archives of all emails"
-    task :zip => zipfile
+      desc "Extracts all attachments from all emails"
+      task 'extract:attachments' => attachments_dir
+
+      zip_path = "#{output_email_dir}.zip"
+
+      task zip_path => [output_email_path, links_dir, attachments_dir] do
+        chdir output_category_dir do
+          sh 'zip', '-r', '-P', 'infected', File.basename(zip_path),
+                                            File.basename(output_email_dir)
+        end
+      end
+
+      desc "Creates zip archives of all emails"
+      task :zip => zip_path
+    end
   end
 end
