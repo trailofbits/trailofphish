@@ -10,3 +10,8 @@ gem 'nokogiri',   '~> 1.5.5'
 gem 'mechanize',  '~> 2.5.1'
 
 # gem 'russdeep', '~> 1.1.0'
+
+group :docs do
+  gem 'kramdown', '~> 0.13.7'
+  gem 'yard',     '~> 0.8'
+end

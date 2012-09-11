@@ -98,3 +98,6 @@ namespace :emails do
     end
   end
 end
+
+require 'yard'
+YARD::Rake::YardocTask.new  
