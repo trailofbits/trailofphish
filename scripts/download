@@ -1,7 +1,7 @@
 #!/bin/bash
 
 HOST=https://trailofphish.com/
-CATEGORIES=(crime phishing)
+CATEGORIES=(crime apt)
 
 # HTTP Basic-Auth credentials
 HTTP_USER=CHANGEME
