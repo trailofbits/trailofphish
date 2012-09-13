@@ -1,3 +1,4 @@
+config/deploy.yml
 data/raw/
 data/processed/
 doc/
