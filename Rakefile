@@ -51,14 +51,17 @@ namespace :emails do
 
         mkdir links_dir
 
-        email.links.each do |url|
-          uri = URI(url)
-
-          output = File.join(links_dir,uri.host,uri.request_uri)
+        email.urls.each do |url|
+          output = File.join(links_dir,url.host,url.request_uri)
           mkdir_p File.dirname(output)
 
           puts ">>> Downloading #{url} ..."
-          browser.get(url).save(output)
+
+          begin
+            browser.get(url).save(output)
+          rescue
+            puts "!!! Unable to download #{url}"
+          end
         end
       end
 
