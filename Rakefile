@@ -21,6 +21,7 @@ namespace :emails do
 
   Dir.glob("#{INPUT_DIR}/*") do |input_category_dir|
     output_category_dir = File.join(OUTPUT_DIR,File.basename(input_category_dir))
+    zip_files = []
 
     Dir.glob("#{input_category_dir}/*.eml") do |input_email|
       output_email_dir  = File.join(output_category_dir,Email::Message.md5(input_email))
@@ -96,9 +97,23 @@ namespace :emails do
         end
       end
 
+      zip_files << zip_path
+
       desc "Creates zip archives of all emails"
       task :zip => zip_path
     end
+
+    manifest_file = File.join(output_category_dir,'Manifest.txt')
+
+    file manifest_file => zip_files do
+      puts ">>> Generating #{manifest_file} ..."
+      File.open(manifest_file,'w') do |file|
+        zip_files.each { |name| file.puts File.basename(name) }
+      end
+    end
+
+    desc "Generates Manifest.txt files for all categories"
+    task :manifest => manifest_file
   end
 end
 
