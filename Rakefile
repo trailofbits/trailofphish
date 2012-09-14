@@ -117,5 +117,7 @@ namespace :emails do
   end
 end
 
+task :emails => ['emails:manifest']
+
 require 'yard'
 YARD::Rake::YardocTask.new  
