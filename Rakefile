@@ -32,7 +32,7 @@ namespace :emails do
       file output_email_path => output_email_dir do
         email = Email::Message.new(input_email)
 
-        puts ">>> Anonymizing #{input_email} ..."
+        puts ">>> Anonymizing #{input_email} -> #{output_email_path} ..."
 
         File.open(output_email_path,'w') do |output_file|
           output_file.write(email.anonymize)
