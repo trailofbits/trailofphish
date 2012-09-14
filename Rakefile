@@ -89,7 +89,7 @@ namespace :emails do
 
       zip_path = "#{output_email_dir}.zip"
 
-      task zip_path => [output_email_path, links_dir, attachments_dir] do
+      file zip_path => [output_email_path, links_dir, attachments_dir] do
         chdir output_category_dir do
           sh 'zip', '-r', '-P', 'infected', File.basename(zip_path),
                                             File.basename(output_email_dir)
