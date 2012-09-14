@@ -49,8 +49,8 @@ module Email
     def anonymize
       raw_message = File.read(@path)
 
-      replace_with_xs = lambda { |string|
-        raw_message.gsub!(string) do |match|
+      replace_with_xs = lambda { |text|
+        raw_message.gsub!(text.to_s) do |match|
           'X' * match.length
         end
       }
@@ -60,6 +60,9 @@ module Email
 
       # redact all recipient names
       @message[:to].display_names.compact.each(&replace_with_xs)
+
+      # redact Delivered-To
+      replace_with_xs[@message[:delivered_to]]
 
       return raw_message
     end
