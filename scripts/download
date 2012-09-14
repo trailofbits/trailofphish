@@ -6,6 +6,7 @@ shopt -s nullglob
 HTTP_USER=phish
 HTTP_PASSWORD=phishy
 
+URL=https://trailofphish.com/emails
 CATEGORIES=(crime apt)
 
 for category in ${CATEGORIES[*]}; do
@@ -14,14 +15,17 @@ for category in ${CATEGORIES[*]}; do
 	mkdir -p $category/
 	pushd $category/ >/dev/null
 
-	wget -q -nc -A "*.zip" --http-user=$HTTP_USER --http-password=$HTTP_PASSWORD https://trailofphish.com/emails/$category/ $category/
+	MANIFEST=$(curl -s -u $HTTP_USER:$HTTP_PASSWORD $URL/$category/Manifest.txt)
 
-	echo ">>> Extracting new archives ..."
+	for zipfile in $MANIFEST; do
+		if [[ ! -f $zipfile ]]; then
+			echo ">>> Downloading $zipfile ..."
+			curl -u $HTTP_USER:$HTTP_PASSWORD -O $URL/$category/$zipfile
 
-	for archive in $category/*.zip; do
-		unzip -n -P infected $archive -d $category/
+			echo ">>> Extracting new archives ..."
+			unzip -n -P infected $zipfile
+		fi
 	done
 
-	rm -f index.html
 	popd >/dev/null
 done
