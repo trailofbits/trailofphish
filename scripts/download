@@ -22,5 +22,6 @@ for category in ${CATEGORIES[*]}; do
 		unzip -n -P infected $archive -d $category/
 	done
 
+	rm -f index.html
 	popd >/dev/null
 done
