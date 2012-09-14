@@ -3,8 +3,8 @@
 shopt -s nullglob
 
 # HTTP Basic-Auth credentials
-HTTP_USER=CHANGEME
-HTTP_PASSWORD=CHANGEME
+HTTP_USER=phish
+HTTP_PASSWORD=phishy
 
 CATEGORIES=(crime apt)
 
@@ -12,11 +12,15 @@ for category in ${CATEGORIES[*]}; do
 	echo ">>> Updating $category ..."
 
 	mkdir -p $category/
-	wget -nc -A "*.zip" --http-user=$HTTP_USER --http-password=$HTTP_PASSWORD https://trailofphish.com/emails/$category/ $category/
+	pushd $category/ >/dev/null
+
+	wget -q -nc -A "*.zip" --http-user=$HTTP_USER --http-password=$HTTP_PASSWORD https://trailofphish.com/emails/$category/ $category/
 
 	echo ">>> Extracting new archives ..."
 
 	for archive in $category/*.zip; do
 		unzip -n -P infected $archive -d $category/
 	done
+
+	popd >/dev/null
 done
