@@ -19,15 +19,6 @@ namespace :emails do
   INPUT_DIR  = File.join('data','raw')
   OUTPUT_DIR = File.join('data','processed')
 
-  desc 'Extracts all links from all emails'
-  task 'extract:links'
-
-  desc "Extracts all attachments from all emails"
-  task 'extract:attachments'
-
-  desc "Creates zip archives of all emails"
-  task :zip
-
   Dir.glob("#{INPUT_DIR}/*") do |input_category_dir|
     output_category_dir = File.join(OUTPUT_DIR,File.basename(input_category_dir))
 
@@ -71,6 +62,7 @@ namespace :emails do
         end
       end
 
+      desc 'Extracts all links from all emails'
       task 'extract:links' => links_dir
 
       attachments_dir = File.join(output_email_dir,'attachments')
@@ -89,6 +81,7 @@ namespace :emails do
         end
       end
 
+      desc "Extracts all attachments from all emails"
       task 'extract:attachments' => attachments_dir
 
       zip_path = "#{output_email_dir}.zip"
@@ -101,7 +94,7 @@ namespace :emails do
       end
 
       desc "Creates zip archives of all emails"
-      task :zip
+      task :zip => zip_path
     end
   end
 end
