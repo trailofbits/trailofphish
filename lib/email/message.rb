@@ -50,20 +50,18 @@ module Email
       raw_message = File.read(@path)
 
       replace_with_xs = lambda { |text|
-        raw_message.gsub!(text.to_s) do |match|
-          'X' * match.length
-        end
+        raw_message.gsub!(text.to_s) { |match| 'X' * match.length }
       }
 
-      # redact all recipient addresses
-      @message[:to].addresses.each(&replace_with_xs)
-
-      # redact all recipient names
-      @message[:to].display_names.compact.each(&replace_with_xs)
-
-      # redact Delivered-To
+      # redact the Delivered-To field
       replace_with_xs[@message[:delivered_to]]
 
+      # redact the addresses in the To field
+      @message[:to].addresses.each(&replace_with_xs)
+
+      # redact the display names in the To field
+      @message[:to].display_names.compact.each(&replace_with_xs)
+      
       return raw_message
     end
 
