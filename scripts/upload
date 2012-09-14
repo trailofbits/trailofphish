@@ -1,8 +1,5 @@
 #!/bin/bash
 
-UPLOAD_HOST=trailofphish.com
-UPLOAD_USER=phish
-
 function usage() {
 	echo "usage: upload FILE CATEGORY"
 	exit -1
@@ -20,7 +17,7 @@ fi
 
 echo ">>> Uploading $FILE into $CATEGORY"
 
-scp $FILE $UPLOAD_USER@$UPLOAD_HOST:/home/$UPLOAD_USER/emails/$CATEGORY/
+scp $FILE submissions@trailofphish.com:~/emails/$CATEGORY/
 
 if [[ $? -eq 0 ]]; then
 	echo ">>> Uploaded $FILE!"
