@@ -111,11 +111,11 @@ module Email
 
         case mime_type.sub_type
         when 'html', 'xhtml'
-          Nokogiri::HTML(body).search('//a/@href').each do |attr|
-            yield attr.value
+          Nokogiri::HTML(body).search('//a[@href]').each do |a|
+            yield a.attr('href')
           end
         when 'plain'
-          URI.extract(body,&block)
+          URI.extract(body,['http','https'],&block)
         end
       end
     end
@@ -128,6 +128,39 @@ module Email
     #
     def links
       each_link.to_set
+    end
+
+    #
+    # Enumerates over each URL within the message.
+    #
+    # @yield [url]
+    #   The given block will be passed each URL found within the message.
+    #
+    # @yieldparam [URI] url
+    #   An extracted URL from the message.
+    #
+    # @return [Enumerator]
+    #   If no block is given, an Enumerator will be returned.
+    #
+    def each_url
+      return enum_for(__method__) unless block_given?
+
+      each_link do |link|
+        begin
+          yield URI(link)
+        rescue URI::InvalidURIError
+        end
+      end
+    end
+
+    #
+    # The unique set of URLs within the message.
+    #
+    # @return [Set<URI>]
+    #   The set of unique URLs.
+    #
+    def urls
+      each_url.to_set
     end
 
     alias path to_s
