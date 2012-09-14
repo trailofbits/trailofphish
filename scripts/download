@@ -1,12 +1,14 @@
 #!/bin/bash
 
+shopt -s nullglob
+
 # HTTP Basic-Auth credentials
 HTTP_USER=CHANGEME
 HTTP_PASSWORD=CHANGEME
 
 CATEGORIES=(crime apt)
 
-for category in $CATEGORIES; do
+for category in ${CATEGORIES[*]}; do
 	echo ">>> Updating $category ..."
 
 	mkdir -p $category/
@@ -14,7 +16,7 @@ for category in $CATEGORIES; do
 
 	echo ">>> Extracting new archives ..."
 
-	for archive in `ls $category/*.zip`; do
+	for archive in $category/*.zip; do
 		unzip -n -P infected $archive -d $category/
 	done
 done
