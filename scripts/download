@@ -3,8 +3,8 @@
 shopt -s nullglob
 
 # HTTP Basic-Auth credentials
-HTTP_USER=phish
-HTTP_PASSWORD=phishy
+HTTP_USER=CHANGE_ME
+HTTP_PASSWORD=CHANGE_ME
 
 URL=https://trailofphish.com/emails
 CATEGORIES=(crime apt)
