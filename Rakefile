@@ -13,8 +13,6 @@ $LOAD_PATH.unshift(File.expand_path('lib'))
 require 'email/message'
 require 'email/attachment'
 
-require 'mechanize'
-
 namespace :emails do
   INPUT_DIR  = File.join('data','raw')
   OUTPUT_DIR = File.join('data','processed')
@@ -42,33 +40,6 @@ namespace :emails do
       desc "Anonymizes all original emails"
       task :anonymize => output_email_path
 
-      links_dir = File.join(output_email_dir,'links')
-
-      file links_dir => output_email_dir do
-        email = Email::Message.new(input_email)
-
-        browser = Mechanize.new
-        browser.pluggable_parser.default = Mechanize::Download
-
-        mkdir links_dir
-
-        email.urls.each do |url|
-          output = File.join(links_dir,url.host,url.request_uri)
-          mkdir_p File.dirname(output)
-
-          puts ">>> Downloading #{url} ..."
-
-          begin
-            browser.get(url).save(output)
-          rescue
-            puts "!!! Unable to download #{url}"
-          end
-        end
-      end
-
-      desc 'Extracts all links from all emails'
-      task 'extract:links' => links_dir
-
       attachments_dir = File.join(output_email_dir,'attachments')
 
       file attachments_dir => output_email_dir do
@@ -90,7 +61,7 @@ namespace :emails do
 
       zip_path = "#{output_email_dir}.zip"
 
-      file zip_path => [output_email_path, links_dir, attachments_dir] do
+      file zip_path => [output_email_path, attachments_dir] do
         chdir output_category_dir do
           sh 'zip', '-r', '-P', 'infected', File.basename(zip_path),
                                             File.basename(output_email_dir)

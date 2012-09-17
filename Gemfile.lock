@@ -1,8 +1,6 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    domain_name (0.5.3)
-      unf (~> 0.0.3)
     ffi (1.1.5)
     i18n (0.6.0)
     kramdown (0.13.7)
@@ -12,28 +10,13 @@ GEM
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
-    mechanize (2.5.1)
-      domain_name (~> 0.5, >= 0.5.1)
-      mime-types (~> 1.17, >= 1.17.2)
-      net-http-digest_auth (~> 1.1, >= 1.1.1)
-      net-http-persistent (~> 2.5, >= 2.5.2)
-      nokogiri (~> 1.4)
-      ntlm-http (~> 0.1, >= 0.1.1)
-      webrobots (~> 0.0, >= 0.0.9)
     mime-types (1.19)
-    net-http-digest_auth (1.2.1)
-    net-http-persistent (2.7)
     nokogiri (1.5.5)
-    ntlm-http (0.1.1)
     polyglot (0.3.3)
     rake (0.9.2.2)
     treetop (1.4.10)
       polyglot
       polyglot (>= 0.3.1)
-    unf (0.0.5)
-      unf_ext
-    unf_ext (0.0.5)
-    webrobots (0.0.13)
     yard (0.8.2.1)
 
 PLATFORMS
@@ -43,7 +26,6 @@ DEPENDENCIES
   kramdown (~> 0.13.7)
   magic (~> 0.2.6)
   mail (~> 2.3.3)
-  mechanize (~> 2.5.1)
   mime-types (~> 1.19)
   nokogiri (~> 1.5.5)
   rake (~> 0.9)
