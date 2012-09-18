@@ -1,0 +1,16 @@
+#!/bin/bash
+
+HTTP_USER=CHANGEME
+HTTP_PASSWORD=CHANGEME
+
+if [[ ! $# -eq 2 ]]; then
+	echo "usage: submit CATEGORY EMAIL"
+fi
+
+RESPONSE=`curl --write-out %{http_code} --output /dev/null --user $HTTP_USER:$HTTP_PASSWORD -F category=$1 -F email=@$2 https://www.trailofphish.com/submit`
+
+case $RESPONSE in
+	401)	echo "!!! Incorrect username or password" && exit -1 ;;
+	500)	echo "!!! Invalid email: $2"              && exit -1 ;;
+	200)	echo ">>> Email successfully submitted!"
+esac
