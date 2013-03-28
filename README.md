@@ -1,5 +1,7 @@
 # Trail of Phish
 
+[![Code Climate](https://codeclimate.com/github/trailofbits/trailofphish.png)](https://codeclimate.com/github/trailofbits/trailofphish)
+
 Trail of Phish is a private repository of phishing emails.
 
 ## Usage
