@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rake', '~> 0.9'
+gem 'rake', '~> 10.0'
 
 gem 'mail',       '~> 2.3.3'
 gem 'mime-types', '~> 1.19', :require => 'mime/types'
