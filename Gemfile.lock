@@ -2,11 +2,11 @@ GEM
   remote: https://rubygems.org/
   specs:
     ffi (1.1.5)
-    i18n (0.6.0)
+    i18n (0.6.9)
     kramdown (0.13.7)
     magic (0.2.6)
       ffi (>= 0.6.3)
-    mail (2.3.3)
+    mail (2.4.4)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
@@ -14,7 +14,7 @@ GEM
     nokogiri (1.5.5)
     polyglot (0.3.3)
     rake (10.1.0)
-    treetop (1.4.10)
+    treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
     yard (0.8.2.1)
@@ -25,7 +25,7 @@ PLATFORMS
 DEPENDENCIES
   kramdown (~> 0.13.7)
   magic (~> 0.2.6)
-  mail (~> 2.3.3)
+  mail (~> 2.4.4)
   mime-types (~> 1.19)
   nokogiri (~> 1.5.5)
   rake (~> 10.0)
