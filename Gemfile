@@ -12,5 +12,5 @@ gem 'nokogiri',   '~> 1.5'
 
 group :docs do
   gem 'kramdown', '~> 0.13'
-  gem 'yard',     '~> 0.8'
+  gem 'yard',     '~> 0.9'
 end
